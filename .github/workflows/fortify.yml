@@ -1,0 +1,38 @@
+name: OpenText Fortify AST Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  Fortify-AST-Scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Check Out Source Code
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Fortify Scan
+        uses: fortify/github-action@v3
+        env:
+          FOD_URL: https://api.emea.fortify.com
+          FOD_TENANT: ${{ secrets.FOD_TENANT }}
+          FOD_USER: ${{ secrets.FOD_USER }}
+          FOD_PASSWORD: ${{ secrets.FOD_PAT }}
+          DO_SCA_SCAN: true
+          DO_AVIATOR_AUDIT: true
+          # FOD_RELEASE: PatientPortal:main (optional - defaults to repo:branch)
