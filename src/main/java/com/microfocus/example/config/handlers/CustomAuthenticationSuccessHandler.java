@@ -92,13 +92,30 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         if (isAdmin) {
             targetUrl = ADMIN_HOME_URL;
-        } else {
             String loginReferer = (String) session.getAttribute("loginReferer");
             if (loginReferer == null || loginReferer.isEmpty()) {
                 log.debug("No loginReferer; redirecting to users home page");
                 targetUrl = USER_HOME_URL;
             } else {
-                targetUrl = loginReferer;
+                // Validate that the referer is a relative URL or same-origin
+                if (loginReferer.startsWith("/")) {
+                    targetUrl = loginReferer;
+                } else {
+                    try {
+                        URL refererUrl = new URL(loginReferer);
+                        URL requestUrl = new URL(request.getRequestURL().toString());
+                        if (refererUrl.getHost().equals(requestUrl.getHost()) && 
+                            refererUrl.getProtocol().equals(requestUrl.getProtocol())) {
+                            targetUrl = loginReferer;
+                        } else {
+                            log.warn("Referer points to different host, redirecting to user home instead");
+                            targetUrl = USER_HOME_URL;
+                        }
+                    } catch (MalformedURLException ex) {
+                        log.error("Invalid referer URL: " + ex.getLocalizedMessage());
+                        targetUrl = USER_HOME_URL;
+                    }
+                }
                 String targetPath = null;
                 try {
                     targetPath = new URL(targetUrl).getPath();

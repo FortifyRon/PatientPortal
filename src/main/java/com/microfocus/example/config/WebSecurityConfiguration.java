@@ -155,6 +155,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
            .contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; object-src https://trustedplugins.example.com; report-uri /csp-report-endpoint/");
              */
 
+            httpSecurity.headers()
+                    .contentSecurityPolicy("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+
             httpSecurity.authorizeRequests()
                     .antMatchers("/",
                             "/products/**",
