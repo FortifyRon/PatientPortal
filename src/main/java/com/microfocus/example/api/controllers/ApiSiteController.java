@@ -239,7 +239,7 @@ public class ApiSiteController {
                 .collect(Collectors.toList());
 
         Cookie jwtTokenCookie = new Cookie("jwtToken", jwt);
-        jwtTokenCookie.setSecure(false);
+        jwtTokenCookie.setSecure(true); // L242
         jwtTokenCookie.setHttpOnly(false);
         response.addCookie(jwtTokenCookie);
 
@@ -287,5 +287,3 @@ public class ApiSiteController {
     }
 
 }
-
-
