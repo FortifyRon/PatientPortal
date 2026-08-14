@@ -90,7 +90,9 @@ public class ProductController extends AbstractBaseController {
 
     	String retContent = "Product search using: " + keywords;
     	
-        return ResponseEntity.ok().body(retContent);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(retContent);
     }
 
     @GetMapping("/firstaid")
@@ -152,7 +154,11 @@ public class ProductController extends AbstractBaseController {
 
         log.debug("Using data directory: " + dataDir.getAbsolutePath());
         String fileBasePath = dataDir.getAbsolutePath() + File.separatorChar + productId.toString() + File.separatorChar;
-        Path path = Paths.get(fileBasePath + fileName);
+        Path basePath = Paths.get(fileBasePath).normalize();
+        Path path = basePath.resolve(fileName).normalize();
+        if (!path.startsWith(basePath)) {
+            return ResponseEntity.notFound().build();
+        }
         try {
             resource = new UrlResource(path.toUri());
         } catch (MalformedURLException e) {

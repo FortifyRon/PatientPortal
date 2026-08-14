@@ -53,7 +53,7 @@ public class AuthenticationEntryPointJwt implements AuthenticationEntryPoint {
         //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         ArrayList<String> errors = new ArrayList<>();
-        errors.add(ex.getLocalizedMessage());
+        errors.add("Authentication failed. Please check your credentials."); // L56
         ApiStatusResponse apiStatusResponse = new ApiStatusResponse
                 .ApiResponseBuilder()
                 .withSuccess(false)
