@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -78,6 +79,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
@@ -671,7 +673,7 @@ public class UserController extends AbstractBaseController {
     	
     	Resource rfile = storageService.loadAsResource(file, true);    	
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + rfile.getFilename() + "\"").body(rfile);    	
+                ContentDisposition.builder("attachment").filename(rfile.getFilename(), StandardCharsets.UTF_8).build().toString()).body(rfile);    	
     }
 
     @GetMapping("/log")
